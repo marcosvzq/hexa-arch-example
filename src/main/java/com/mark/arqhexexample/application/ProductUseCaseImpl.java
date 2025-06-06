@@ -17,9 +17,8 @@ public class ProductUseCaseImpl implements ProductUseCase {
 
 
     @Override
-    public Product createProduct(String name, String description, String price, String sku, String stock, String imageUrl) {
-        Product product = new Product(null, name, description, new BigDecimal(price), sku, stock, imageUrl);
-
+    public Product createProduct(String name, String description, BigDecimal price, String sku, String stock, String imageUrl) {
+        Product product = new Product(null, name, description, price, sku, stock, imageUrl);
         // Add validation logic here if needed
 
         return productRepositoryPort.save(product);

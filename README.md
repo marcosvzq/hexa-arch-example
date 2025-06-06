@@ -86,3 +86,36 @@ Este `README.md` se actualizará continuamente a medida que se añadan nuevas fu
 * Documentación de la API (ej. Swagger/OpenAPI).
 
 ---
+
+## Diagrama Alto Nivel
+
+```mermaid
+%% Diagrama de Arquitectura Hexagonal (Alto Nivel) - Versión Compatible
+graph TD
+    subgraph Mundo Exterior
+        A[Cliente / Navegador]
+    end
+
+    subgraph "Capa de Infraestructura (Adaptadores)"
+        B["Adaptador de Entrada\n(Driving Adapter)\nProductoController"]
+        C["Adaptador de Salida\n(Driven Adapter)\nProductoRepositoryAdapter"]
+    end
+
+    subgraph "Core de la Aplicación (El Hexágono)"
+        D["Puerto de Entrada\n(Input Port)\nProductoUseCase (Interfaz)"]
+        E["Lógica de Aplicación y Dominio\nProductoUseCaseImpl\nProducto (Modelo)"]
+        F["Puerto de Salida\n(Output Port)\nProductoRepositoryPort (Interfaz)"]
+    end
+
+    subgraph "Servicios Externos"
+        G[Base de Datos]
+    end
+
+    %% --- Flujo de la Petición ---
+    A -- Petición HTTP --> B
+    B -- Llama al método del caso de uso --> D
+    D -- Es implementado por --> E
+    E -- Usa el puerto para persistir datos --> F
+    F -- Es implementado por --> C
+    C -- Realiza operación (SELECT, INSERT, etc.) --> G
+```

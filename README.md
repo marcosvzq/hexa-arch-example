@@ -119,3 +119,65 @@ graph TD
     F -- Es implementado por --> C
     C -- Realiza operación (SELECT, INSERT, etc.) --> G
 ```
+
+
+## Diagrama de Secuencia
+
+```mermaid
+%% Diagrama de Secuencia para Crear un Producto (POST /api/v1/productos)
+sequenceDiagram
+    actor Cliente
+    participant C as ProductoController
+    participant M1 as ProductoApiMapper
+    participant UC as ProductoUseCase
+    participant RA as ProductoRepositoryAdapter
+    participant M2 as ProductoPersistenceMapper
+    participant SDR as ProductoSpringDataRepository
+    participant DB as Base de Datos
+
+    title Flujo de Creación de un Producto
+
+    Cliente->>+C: POST /api/v1/productos<br/><i>(JSON con ProductoRequestDTO)</i>
+    note right of C: El Controller recibe la petición HTTP.
+
+    C->>M1: toDomain(requestDTO)
+    note right of M1: Mapea el DTO de la API a un<br/>objeto de Dominio (Producto).
+    M1-->>C: Devuelve objeto 'Producto' (sin id)
+
+    C->>UC: crearProducto(nombre, precio)
+    activate UC
+    note right of UC: Se invoca el caso de uso (la lógica de la aplicación).
+    
+    UC->>RA: guardar(producto)
+    activate RA
+    note right of RA: El caso de uso llama al puerto de salida,<br/>invocando la implementación del adaptador.
+
+    RA->>M2: toEntity(producto)
+    note right of M2: El adaptador de persistencia mapea<br/>el objeto de Dominio a una Entidad JPA.
+    M2-->>RA: Devuelve objeto 'ProductoEntity'
+
+    RA->>SDR: save(productoEntity)
+    activate SDR
+    note right of SDR: El adaptador usa el repositorio de Spring Data<br/>para la operación de base de datos.
+    
+    SDR->>DB: INSERT INTO productos (...) VALUES (...)
+    DB-->>SDR: Devuelve la fila guardada con el ID generado
+    
+    SDR-->>RA: Devuelve 'ProductoEntity' (¡ahora con id!)
+    deactivate SDR
+    
+    RA->>M2: toDomain(productoEntityGuardado)
+    M2-->>RA: Mapea la Entidad de vuelta a objeto de Dominio.
+    RA-->>UC: Devuelve objeto 'Producto' (con id)
+    deactivate RA
+    
+    UC-->>C: Devuelve 'Producto' guardado
+    deactivate UC
+    
+    C->>M1: toResponseDTO(productoGuardado)
+    note right of M1: Mapea el objeto de Dominio de vuelta<br/>a un DTO de respuesta para la API.
+    M1-->>C: Devuelve 'ProductoResponseDTO'
+
+    C-->>-Cliente: HTTP 201 Created<br/><i>(JSON con ProductoResponseDTO)</i>
+
+```

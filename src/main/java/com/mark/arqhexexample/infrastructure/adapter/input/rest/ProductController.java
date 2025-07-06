@@ -57,7 +57,7 @@ public class ProductController {
                 id,
                 productRequestDTO.name(),
                 productRequestDTO.description(),
-                productRequestDTO.price().toString(),
+                productRequestDTO.price(),
                 productRequestDTO.sku(),
                 productRequestDTO.stock(),
                 productRequestDTO.imageUrl()

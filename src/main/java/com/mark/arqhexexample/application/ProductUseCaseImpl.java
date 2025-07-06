@@ -35,12 +35,12 @@ public class ProductUseCaseImpl implements ProductUseCase {
     }
 
     @Override
-    public Optional<Product> updateProduct(Long id, String name, String description, String price, String sku, String stock, String imageUrl) {
+    public Optional<Product> updateProduct(Long id, String name, String description, BigDecimal price, String sku, String stock, String imageUrl) {
         return productRepositoryPort.getById(id).
                 map(ProductExists -> {
                     ProductExists.setName(name);
                     ProductExists.setDescription(description);
-                    ProductExists.setPrice(new BigDecimal(price));
+                    ProductExists.setPrice(price);
                     ProductExists.setSku(sku);
                     ProductExists.setStock(stock);
                     ProductExists.setImageUrl(imageUrl);

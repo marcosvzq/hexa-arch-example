@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ProductUseCase {
     Product createProduct(String name, String description, BigDecimal price, String sku, String stock, String imageUrl);
 
-    Optional<Product> updateProduct(Long id, String name, String description, String price, String sku, String stock, String imageUrl);
+    Optional<Product> updateProduct(Long id, String name, String description, BigDecimal price, String sku, String stock, String imageUrl);
 
     boolean deleteProduct(Long id);
 
